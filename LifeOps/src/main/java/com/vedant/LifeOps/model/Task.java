@@ -23,9 +23,11 @@ public class Task {
 
     private String description;
 
-    private String priority;
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     private LocalDateTime dueDate;
 
