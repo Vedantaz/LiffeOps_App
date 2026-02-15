@@ -1,10 +1,11 @@
 package com.vedant.LifeOps.service;
 
+import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.repo.TaskRepo;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -19,8 +20,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(Task task) {
-        task.setCreatedAt(LocalDateTime.now());
+        task.setCreatedAt(LocalDate.now());
         return taskRepo.save(task);
+    }
+
+    public Task getTaskByStatus(Status status){
+        return (Task) taskRepo.findByStatus(status);
     }
 
     @Override
@@ -34,15 +39,19 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
+    public List<Task> getTasksByStatus(Status status) {
+        return taskRepo.findByStatus(status);
+    }
+
     @Override
     public Task updateTask(Long id, Task task) {
         Task existing  = getTaskById(id);
 
-        existing.setTitle(updatedTask.getTitle());
-        existing.setDescription(updatedTask.getDescription());
-        existing.setPriority(updatedTask.getPriority());
-        existing.setStatus(updatedTask.getStatus());
-        existing.setDueDate(updatedTask.getDueDate());
+        existing.setTitle(task.getTitle());
+        existing.setDescription(task.getDescription());
+        existing.setPriority(task.getPriority());
+        existing.setStatus(task.getStatus());
+        existing.setDueDate(task.getDueDate());
 
         return taskRepo.save(existing);
     }
@@ -51,6 +60,4 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTask(Long id) {
         taskRepo.deleteById(id);
     }
-
-
 }

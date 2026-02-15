@@ -1,0 +1,25 @@
+### Create Task
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "title": "Learn Spring Boot",
+  "description": "Build production backend",
+  "priority": "HIGH",
+  "status": "TODO"
+}
+
+###
+
+### Get All Tasks
+GET http://localhost:8080/tasks
+
+###
+
+### Get Task By Id
+GET http://localhost:8080/tasks/1
+
+###
+
+### Delete Task
+DELETE http://localhost:8080/tasks/1
