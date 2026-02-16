@@ -3,6 +3,7 @@ import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -42,8 +43,14 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public ResponseEntity<Task> delete(@PathVariable Long id) {
+
+        Task deletedTask = taskService.deleteTask(id);
+        if(deletedTask == null) {
+            System.out.println("Task not found with id: " + id);
+            return null;
+        }
+        return ResponseEntity.ok(deletedTask);
     }
 
 
