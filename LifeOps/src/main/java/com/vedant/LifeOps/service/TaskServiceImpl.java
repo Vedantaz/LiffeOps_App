@@ -9,9 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+// pagination
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 @Service
 
 public class TaskServiceImpl implements TaskService {
@@ -92,5 +96,15 @@ public class TaskServiceImpl implements TaskService {
 
         taskRepo.delete(existing);
         return mapToDto(existing);
+    }
+
+    //pagination
+
+    @Override
+    public Page<TaskDto> getAllTasksPaginated(int page, int size, String sortBy){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        Page<Task> taskPage = taskRepo.findAll(pageable);
+
+        return taskPage.map(this::mapToDto);
     }
 }

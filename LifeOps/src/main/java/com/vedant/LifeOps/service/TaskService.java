@@ -5,6 +5,7 @@ import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Service
 public interface TaskService {
@@ -21,5 +22,11 @@ public interface TaskService {
     TaskDto deleteTask(Long id);
 
     List<TaskDto> getTasksByStatus(Status status);
+
+    // pagination
+
+
+    Page<TaskDto> getAllTasksPaginated(int page, int size, String sortBy);
+
 
 }

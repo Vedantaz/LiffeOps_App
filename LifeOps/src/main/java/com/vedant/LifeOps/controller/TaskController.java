@@ -5,20 +5,23 @@ import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.service.TaskService;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @RestController
 @RequestMapping("/tasks")
-@Slf4j
 
 public class TaskController {
 
     private final TaskService taskService;
 
+    private static final Logger log = LoggerFactory.getLogger(TaskController.class);
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -61,6 +64,16 @@ public class TaskController {
         TaskDto deletedTask = taskService.deleteTask(id);
 
         return ResponseEntity.ok(deletedTask);
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<TaskDto>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "0") int size,
+            @RequestParam(defaultValue = "0") String sortBy ){
+
+        log.info("Fetching paginated tasks - page :{}, size: {}, sortBy: {}", page, size, sortBy);
+        return ResponseEntity.ok(taskService.getAllTasksPaginated(page, size, sortBy));
     }
 
 }
