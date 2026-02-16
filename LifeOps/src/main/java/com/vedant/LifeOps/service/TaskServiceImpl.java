@@ -5,6 +5,7 @@ import com.vedant.LifeOps.exception.ResourceNotFoundException;
 import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.repo.TaskRepo;
+import org.hibernate.sql.ast.tree.expression.Over;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -42,14 +43,23 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto createTask(Task task) {
         task.setCreatedAt(LocalDate.now());
         Task savedTask = taskRepo.save(task);
-
-
         return mapToDto(savedTask);
     }
 
-    public Task getTaskByStatus(Status status){
-        return (Task) taskRepo.findByStatus(status);
+    public Page<Task> getTaskByStatus(Status status, Pageable pageable){
+        return taskRepo.findByStatus(status, pageable);
     }
+
+    @Override
+    public Page<TaskDto> getTasksByStatusPaginated(Status status, int page, int size, String sortBy){
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        Page<Task> taskPage = taskRepo.findByStatus(status, pageable);
+        return taskPage.map(this::mapToDto);
+
+    }
+
+
 
     @Override
     public List<TaskDto> getAllTasks() {
@@ -66,10 +76,12 @@ public class TaskServiceImpl implements TaskService {
         return mapToDto(task);
     }
 
-    public List<TaskDto> getTasksByStatus(Status status) {
-        List<Task> task = taskRepo.findByStatus(status);
-        return task.stream().map(this::mapToDto).toList();
+
+    public Page<TaskDto> getTasksByStatus(Status status, Pageable pageable) {
+        Page<Task> task = taskRepo.findByStatus(status, pageable);
+        return task.map(this::mapToDto);
     }
+
 
     @Override
     public TaskDto updateTask(Long id, Task task) {

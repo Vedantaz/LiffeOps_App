@@ -6,6 +6,7 @@ import com.vedant.LifeOps.service.TaskService;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,16 +40,31 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
+    @GetMapping
+    public ResponseEntity<Page<TaskDto>> getTasks(
+            @RequestParam(required = false) Status status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ){
+        if(status != null){
+            return ResponseEntity.ok(taskService.getTasksByStatusPaginated(status, page, size, sortBy));
+        }
+
+        return ResponseEntity.ok(taskService.getAllTasksPaginated(page, size, sortBy));
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> getById(@PathVariable Long id) {
         log.info("Fetching task with id: {}", id);
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
     @GetMapping("/status/{status}")
-    public List<TaskDto> getByStatus(@PathVariable Status status) {
+    public Page<TaskDto> getByStatus(@PathVariable Status status, Pageable pageable) {
 
         log.info("Fetching tasks with status: {}", status);
-        return taskService.getTasksByStatus(status);
+        return taskService.getTasksByStatus(status, pageable);
     }
 
     @PutMapping("/{id}")
