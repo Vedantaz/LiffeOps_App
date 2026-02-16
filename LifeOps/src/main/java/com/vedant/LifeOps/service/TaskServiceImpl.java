@@ -1,5 +1,7 @@
 package com.vedant.LifeOps.service;
 
+import com.vedant.LifeOps.dto.TaskDto;
+import com.vedant.LifeOps.exception.ResourceNotFoundException;
 import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.repo.TaskRepo;
@@ -7,9 +9,23 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
+
 public class TaskServiceImpl implements TaskService {
+
+    private TaskDto mapToDto(Task task){
+        TaskDto dto = new TaskDto();
+        dto.setId(task.getId());
+        dto.setTitle(task.getTitle());
+        dto.setDescription(task.getDescription());
+        dto.setPriority(task.getPriority());
+        dto.setStatus(task.getStatus());
+        dto.setDueDate(task.getDueDate());
+        return dto;
+    }
 
     private final TaskRepo taskRepo;
 
@@ -19,9 +35,12 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Task createTask(Task task) {
+    public TaskDto createTask(Task task) {
         task.setCreatedAt(LocalDate.now());
-        return taskRepo.save(task);
+        Task savedTask = taskRepo.save(task);
+
+
+        return mapToDto(savedTask);
     }
 
     public Task getTaskByStatus(Status status){
@@ -29,37 +48,49 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasks() {
-        return taskRepo.findAll();
+    public List<TaskDto> getAllTasks() {
+        List<Task> task = taskRepo.findAll();
+        return task.stream().map(this::mapToDto).toList();
+
     }
 
     @Override
-    public Task getTaskById(long id) {
-        return taskRepo.findById(id).orElseThrow(()-> new RuntimeException("Task not found.") );
+    public TaskDto getTaskById(long id) {
 
+        Task task = taskRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        return mapToDto(task);
     }
 
-    public List<Task> getTasksByStatus(Status status) {
-        return taskRepo.findByStatus(status);
+    public List<TaskDto> getTasksByStatus(Status status) {
+        List<Task> task = taskRepo.findByStatus(status);
+        return task.stream().map(this::mapToDto).toList();
     }
 
     @Override
-    public Task updateTask(Long id, Task task) {
-        Task existing  = getTaskById(id);
+    public TaskDto updateTask(Long id, Task task) {
+        Task existing  = taskRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Task not found"));
 
         existing.setTitle(task.getTitle());
+//        log.info("Creating new task with title: {}", task.getTitle());
         existing.setDescription(task.getDescription());
         existing.setPriority(task.getPriority());
         existing.setStatus(task.getStatus());
         existing.setDueDate(task.getDueDate());
 
-        return taskRepo.save(existing);
+        Task updated =  taskRepo.save(existing);
+        return mapToDto(updated);
     }
 
     @Override
-    public Task deleteTask(Long id) {
-        Task existing = getTaskById(id);
+    public TaskDto deleteTask(Long id) {
+        Task existing = taskRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Task not found"));
+
         taskRepo.delete(existing);
-        return existing;
+        return mapToDto(existing);
     }
 }

@@ -1,5 +1,6 @@
 package com.vedant.LifeOps.service;
 
+import com.vedant.LifeOps.dto.TaskDto;
 import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import org.springframework.stereotype.Service;
@@ -8,16 +9,17 @@ import java.util.List;
 @Service
 public interface TaskService {
 
-    Task createTask(Task task);
+    TaskDto createTask(Task task);
 
-    List<Task> getAllTasks();
+    List<TaskDto> getAllTasks();
 
-    Task getTaskById(long id);
+    TaskDto getTaskById(long id);
 
 
-    Task updateTask(Long id, Task task);
+    TaskDto updateTask(Long id, Task task);
 
-    Task deleteTask(Long id);
+    TaskDto deleteTask(Long id);
 
-    List<Task> getTasksByStatus(Status status);
+    List<TaskDto> getTasksByStatus(Status status);
+
 }

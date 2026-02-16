@@ -23,19 +23,23 @@ public class Task {
     private Long id;
 
     @NotBlank(message = "Title is required")
+    @Column(nullable = false)
     private String title;
 
     private String description;
 
     @NotNull(message = "Priority is required")
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Priority priority;
 
     @NotNull(message = "Status is required")
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @JsonFormat(pattern = "MM/dd/yyyy")
+    @Column(nullable = false)
     private LocalDate dueDate;
 
     public Long getId() {
