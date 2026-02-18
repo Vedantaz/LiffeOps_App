@@ -14,9 +14,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 @RestController
 @RequestMapping("/tasks")
+@Tag(name = "Task APIs", description = "Operations related to task management")
 
 public class TaskController {
 
