@@ -171,3 +171,146 @@ Clean REST API design principles
 ✔ Validation Integrated
 ✔ Logging Integrated
 ✔ PostgreSQL Connected
+
+
+5️⃣ Logging
+
+Implemented using:
+
+SLF4J (Logger)
+
+Logs added for:
+
+Create
+
+Fetch
+
+Update
+
+Delete
+
+Pagination requests
+
+Example:
+
+log.info("Fetching paginated tasks: page={}, size={}, sortBy={}", page, size, sortBy);
+
+6️⃣ Pagination & Sorting
+
+Implemented using Spring Data JPA Pageable.
+
+Endpoint:
+GET /tasks?page=0&size=5&sortBy=dueDate
+
+Example:
+GET /tasks?page=0&size=3&sortBy=id
+
+
+Response includes:
+
+content
+
+totalElements
+
+totalPages
+
+pageNumber
+
+pageSize
+
+7️⃣ Status-Based Filtering (With Pagination)
+
+You can filter tasks by status with pagination.
+
+Example:
+GET /tasks?status=IN_PROGRESS&page=0&size=3&sortBy=dueDate
+
+
+If status is not provided:
+
+GET /tasks?page=0&size=5
+
+
+This dynamically handles both:
+
+All tasks
+
+Filtered tasks
+
+🗄 Database
+
+PostgreSQL
+
+Spring Data JPA
+
+Auto schema update
+
+Uses LocalDate for date handling
+
+📦 API Design Highlights
+
+Proper HTTP status codes
+
+Clean REST conventions
+
+DTO-based responses
+
+Pageable responses
+
+Structured JSON output
+
+🧠 Key Learnings
+
+Entity vs DTO separation
+
+Interface contract implementation
+
+Spring Data JPA pagination
+
+Enum-based filtering
+
+Logging best practices
+
+Exception handling patterns
+
+Clean controller-service separation
+
+📈 Current Project Level
+
+✔ Basic CRUD
+✔ Production-style layered architecture
+✔ DTO abstraction
+✔ Global error handling
+✔ Logging
+✔ Pagination & filtering
+
+This is now a strong backend foundation project.
+
+🔮 Next Improvements (Planned)
+
+JWT Authentication
+
+Swagger API Documentation
+
+Unit Testing
+
+Role-based Authorization
+
+🏁 How To Run
+
+Start PostgreSQL
+
+Update application.properties
+
+Run:
+
+mvn spring-boot:run
+
+
+API Base URL:
+
+http://localhost:8080/tasks
+
+👨‍💻 Author
+
+Mr. Vedant Dinesh Mule
