@@ -8,12 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-@Service
 public interface TaskService {
 
     TaskDto createTask(Task task);
 
-    List<TaskDto> getAllTasks();
+//    List<TaskDto> getAllTasks();
 
     TaskDto getTaskById(long id);
 
@@ -21,18 +20,5 @@ public interface TaskService {
 
     TaskDto deleteTask(Long id);
 
-    Page<TaskDto> getTasksByStatus(Status status, Pageable pageable);
-
-    Page<TaskDto> getTasksByStatusPaginated(
-            Status status,
-            int page,
-            int size,
-            String sortBy
-    );
-    // pagination
-
-
-    Page<TaskDto> getAllTasksPaginated(int page, int size, String sortBy);
-
-
+    Page<TaskDto> getTasks(Status status, int page, int size, String sortBy);
 }

@@ -37,24 +37,18 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(task));
     }
 
-    @GetMapping
-    public ResponseEntity<List<TaskDto>> getAll() {
-        log.info("Fetching all tasks");
-        return ResponseEntity.ok(taskService.getAllTasks());
-    }
-
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<Page<TaskDto>> getTasks(
             @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        if(status != null){
-            return ResponseEntity.ok(taskService.getTasksByStatusPaginated(status, page, size, sortBy));
-        }
 
-        return ResponseEntity.ok(taskService.getAllTasksPaginated(page, size, sortBy));
+        log.info("Fetching tasks - status: {}, page: {}, size: {}, sortBy: {}",
+                status, page, size, sortBy);
+
+        return ResponseEntity.ok(taskService.getTasks(status, page, size, sortBy));
 
     }
 
@@ -63,12 +57,7 @@ public class TaskController {
         log.info("Fetching task with id: {}", id);
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
-    @GetMapping("/status/{status}")
-    public Page<TaskDto> getByStatus(@PathVariable Status status, Pageable pageable) {
 
-        log.info("Fetching tasks with status: {}", status);
-        return taskService.getTasksByStatus(status, pageable);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody Task task) {
@@ -83,16 +72,6 @@ public class TaskController {
         TaskDto deletedTask = taskService.deleteTask(id);
 
         return ResponseEntity.ok(deletedTask);
-    }
-
-    @GetMapping("/paginated")
-    public ResponseEntity<Page<TaskDto>> getAllPaginated(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "0") int size,
-            @RequestParam(defaultValue = "0") String sortBy ){
-
-        log.info("Fetching paginated tasks - page :{}, size: {}, sortBy: {}", page, size, sortBy);
-        return ResponseEntity.ok(taskService.getAllTasksPaginated(page, size, sortBy));
     }
 
 }

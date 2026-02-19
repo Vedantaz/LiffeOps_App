@@ -5,11 +5,9 @@ import com.vedant.LifeOps.exception.ResourceNotFoundException;
 import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.repo.TaskRepo;
-import org.hibernate.sql.ast.tree.expression.Over;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 // pagination
 import org.springframework.data.domain.Page;
@@ -46,26 +44,20 @@ public class TaskServiceImpl implements TaskService {
         return mapToDto(savedTask);
     }
 
-    public Page<Task> getTaskByStatus(Status status, Pageable pageable){
-        return taskRepo.findByStatus(status, pageable);
-    }
 
     @Override
-    public Page<TaskDto> getTasksByStatusPaginated(Status status, int page, int size, String sortBy){
+    public Page<TaskDto> getTasks(Status status, int page, int size, String sortBy){
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
-        Page<Task> taskPage = taskRepo.findByStatus(status, pageable);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sortBy));
+        Page<Task> taskPage;
+
+        if(status != null){
+            taskPage = taskRepo.findByStatus(status, pageable);
+
+        }else{
+            taskPage = taskRepo.findAll(pageable);
+        }
         return taskPage.map(this::mapToDto);
-
-    }
-
-
-
-    @Override
-    public List<TaskDto> getAllTasks() {
-        List<Task> task = taskRepo.findAll();
-        return task.stream().map(this::mapToDto).toList();
-
     }
 
     @Override
@@ -74,12 +66,6 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         return mapToDto(task);
-    }
-
-
-    public Page<TaskDto> getTasksByStatus(Status status, Pageable pageable) {
-        Page<Task> task = taskRepo.findByStatus(status, pageable);
-        return task.map(this::mapToDto);
     }
 
 
@@ -108,15 +94,5 @@ public class TaskServiceImpl implements TaskService {
 
         taskRepo.delete(existing);
         return mapToDto(existing);
-    }
-
-    //pagination
-
-    @Override
-    public Page<TaskDto> getAllTasksPaginated(int page, int size, String sortBy){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
-        Page<Task> taskPage = taskRepo.findAll(pageable);
-
-        return taskPage.map(this::mapToDto);
     }
 }

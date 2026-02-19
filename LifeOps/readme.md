@@ -306,6 +306,12 @@ Run:
 
 mvn spring-boot:run
 
+## 📘 API Documentation
+
+Swagger UI is available at:
+
+http://localhost:8080/swagger-ui/index.html
+
 
 API Base URL:
 
