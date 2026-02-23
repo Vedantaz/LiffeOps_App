@@ -1,5 +1,7 @@
 package com.vedant.LifeOps.controller;
 import com.vedant.LifeOps.dto.TaskDto;
+import com.vedant.LifeOps.dto.TaskRequestDto;
+import com.vedant.LifeOps.model.SortDirection;
 import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.service.TaskService;
@@ -31,7 +33,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDto> Create(@Valid @RequestBody Task task){
+    public ResponseEntity<TaskDto> Create(@Valid @RequestBody TaskRequestDto task){
         // optimized and single eline code
         log.info("Creating task with title: {}", task.getTitle());
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(task));
@@ -42,13 +44,14 @@ public class TaskController {
             @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "ASC")SortDirection direction,
             @RequestParam(defaultValue = "id") String sortBy
     ){
 
         log.info("Fetching tasks - status: {}, page: {}, size: {}, sortBy: {}",
                 status, page, size, sortBy);
 
-        return ResponseEntity.ok(taskService.getTasks(status, page, size, sortBy));
+        return ResponseEntity.ok(taskService.getTasks(status, page, size, direction, sortBy));
 
     }
 
@@ -60,10 +63,9 @@ public class TaskController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody Task task) {
+    public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody TaskRequestDto task) {
         log.info("Updating task with id: {}", id);
-        TaskDto updated = taskService.updateTask(id, task);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(taskService.updateTask(id, task));
     }
 
     @DeleteMapping("/{id}")

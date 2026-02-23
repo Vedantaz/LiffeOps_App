@@ -1,7 +1,9 @@
 package com.vedant.LifeOps.service;
 
 import com.vedant.LifeOps.dto.TaskDto;
+import com.vedant.LifeOps.dto.TaskRequestDto;
 import com.vedant.LifeOps.exception.ResourceNotFoundException;
+import com.vedant.LifeOps.model.SortDirection;
 import com.vedant.LifeOps.model.Status;
 import com.vedant.LifeOps.model.Task;
 import com.vedant.LifeOps.repo.TaskRepo;
@@ -36,19 +38,29 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepo = taskRepo;
     }
 
-
     @Override
-    public TaskDto createTask(Task task) {
+    public TaskDto createTask(TaskRequestDto request) {
+
+        Task task = new Task();
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
+        task.setPriority(request.getPriority());
+        task.setStatus(request.getStatus());
+        task.setDueDate(request.getDueDate());
         task.setCreatedAt(LocalDate.now());
-        Task savedTask = taskRepo.save(task);
-        return mapToDto(savedTask);
+
+        Task saved = taskRepo.save(task);
+        return mapToDto(saved);
     }
 
 
     @Override
-    public Page<TaskDto> getTasks(Status status, int page, int size, String sortBy){
+    public Page<TaskDto> getTasks(Status status, int page, int size, SortDirection direction, String sortBy){
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sortBy));
+        Sort.Direction sortDirection = direction == SortDirection.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
         Page<Task> taskPage;
 
         if(status != null){
@@ -70,7 +82,7 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public TaskDto updateTask(Long id, Task task) {
+    public TaskDto updateTask(Long id, TaskRequestDto task) {
         Task existing  = taskRepo.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Task not found"));
