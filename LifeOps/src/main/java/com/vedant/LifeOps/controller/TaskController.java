@@ -1,4 +1,5 @@
 package com.vedant.LifeOps.controller;
+import com.vedant.LifeOps.dto.ApiResponse;
 import com.vedant.LifeOps.dto.TaskDto;
 import com.vedant.LifeOps.dto.TaskRequestDto;
 import com.vedant.LifeOps.model.SortDirection;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +36,17 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDto> Create(@Valid @RequestBody TaskRequestDto task){
+    public ResponseEntity<ApiResponse<TaskDto>> Create(@Valid @RequestBody TaskRequestDto task){
         // optimized and single eline code
         log.info("Creating task with title: {}", task.getTitle());
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(task));
+        TaskDto created = taskService.createTask(task);
+        ApiResponse<TaskDto> response = ApiResponse.<TaskDto>builder()
+                .success(true)
+                .msg("Task created successfully!")
+                .data(created)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("")
@@ -56,9 +66,18 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<TaskDto>> getById(@PathVariable Long id) {
         log.info("Fetching task with id: {}", id);
-        return ResponseEntity.ok(taskService.getTaskById(id));
+        TaskDto task = taskService.getTaskById(id);
+
+        ApiResponse<TaskDto> response = ApiResponse.<TaskDto>builder()
+                .success(true)
+                .msg("Task fetched successfully")
+                .data(task)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
 
@@ -69,11 +88,20 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TaskDto> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<TaskDto>> delete(@PathVariable Long id) {
+
+
         log.info("Deleting task with id: {}", id);
         TaskDto deletedTask = taskService.deleteTask(id);
 
-        return ResponseEntity.ok(deletedTask);
+        ApiResponse<TaskDto> response = ApiResponse.<TaskDto>builder()
+                .success(true)
+                .msg("Task deleted successfully")
+                .data(deletedTask)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
 }

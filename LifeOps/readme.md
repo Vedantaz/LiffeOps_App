@@ -385,6 +385,39 @@ Replace Basic Auth with JWT
 
 This is where things become production-grade.
 
+/////////
+
+refactor(task-api): improved Swagger documentation and request structure
+
+- Introduced TaskRequestDto to prevent exposing entity directly
+- Removed id and createdAt from POST/PUT request body
+- Implemented enum-based SortDirection for Swagger dropdown support
+- Added direction parameter (ASC/DESC) for dynamic sorting
+- Ensured consistent method signatures across controller, service, and implementation
+- Removed @Valid from service layer (moved validation strictly to controller)
+- Improved clean architecture separation (Controller → Service → Repository)
+
+Swagger now:
+- Shows dropdown for Status
+- Shows dropdown for SortDirection
+- Does not expose internal fields (id, createdAt)
+
+NEXT IS JWT :  MONDAY - 23rd February
+
+🔐 Proper Authentication System (JWT)
+
+Right now you are using Basic Auth.
+
+That is not production standard.
+
+Professional flow is:
+
+1️⃣ Register user
+2️⃣ Login → return JWT token
+3️⃣ Client sends token in header
+4️⃣ API validates token
+5️⃣ Role-based access control
+
 
 
 👨‍💻 Author
