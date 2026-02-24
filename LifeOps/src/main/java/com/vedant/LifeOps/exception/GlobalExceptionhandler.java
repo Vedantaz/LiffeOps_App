@@ -1,12 +1,14 @@
 package com.vedant.LifeOps.exception;
 
 
+import com.vedant.LifeOps.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +17,17 @@ public class GlobalExceptionhandler {
 
     // handle resource not found exception
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ApiResponse<Object>> handleNotFound(ResourceNotFoundException ex){
+
+        ApiResponse<Object> response = ApiResponse.builder()
+                .success(false)
+                .msg(ex.getMessage())
+                .data(null)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
     }
 
@@ -34,10 +45,18 @@ public class GlobalExceptionhandler {
 
     // Handle generic exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGeneral(Exception ex) {
+    public ResponseEntity<ApiResponse<Object>> handleGeneral(Exception ex) {
+
+        ApiResponse<Object> response = ApiResponse.builder()
+                .success(false)
+                .data(null)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Something went wrong: " + ex.getMessage());
+                .body(response);
     }
 
 }
