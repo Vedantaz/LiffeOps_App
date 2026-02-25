@@ -43,13 +43,13 @@ public class SecurityConfig {
                         // auth APIS
                 .requestMatchers("/auth/**").permitAll()
                 // Secure write APIs
-                .requestMatchers(HttpMethod.POST, "/tasks/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/tasks/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/tasks/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "/tasks/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/tasks/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore((Filter) jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore( jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }
