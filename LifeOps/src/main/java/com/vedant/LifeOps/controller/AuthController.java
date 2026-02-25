@@ -1,14 +1,18 @@
 package com.vedant.LifeOps.controller;
 
 
+import com.vedant.LifeOps.dto.LoginRequest;
 import com.vedant.LifeOps.model.Role;
 import com.vedant.LifeOps.model.User;
 import com.vedant.LifeOps.repo.UserRepo;
+import com.vedant.LifeOps.security.JwtService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.*;
 
 import com.vedant.LifeOps.dto.RegisterDto;
 
@@ -16,10 +20,14 @@ import com.vedant.LifeOps.dto.RegisterDto;
 @RequestMapping("/auth")
 public class AuthController {
 
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserRepo userRepo, PasswordEncoder passwordEncoder){
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserRepo userRepo, PasswordEncoder passwordEncoder){
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
     }
@@ -35,5 +43,18 @@ public class AuthController {
                 .role(Role.USER)
                 .build();
         return "User registered successfully!";
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
+        String token = jwtService.generateToken(request.getUsername());
+
+        return ResponseEntity.ok(token);
     }
 }
