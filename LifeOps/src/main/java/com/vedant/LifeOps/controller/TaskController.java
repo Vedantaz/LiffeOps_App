@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<TaskDto>> Create(@Valid @RequestBody TaskRequestDto task){
         // optimized and single eline code
@@ -65,6 +67,7 @@ public class TaskController {
 
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TaskDto>> getById(@PathVariable Long id) {
         log.info("Fetching task with id: {}", id);
@@ -80,13 +83,14 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-
+    @PreAuthorize("hasRole('USER', 'ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody TaskRequestDto task) {
         log.info("Updating task with id: {}", id);
         return ResponseEntity.ok(taskService.updateTask(id, task));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<TaskDto>> delete(@PathVariable Long id) {
 

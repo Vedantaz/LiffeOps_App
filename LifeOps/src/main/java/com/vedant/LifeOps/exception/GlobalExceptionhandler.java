@@ -1,9 +1,12 @@
 package com.vedant.LifeOps.exception;
 
-
 import com.vedant.LifeOps.dto.ApiResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,6 +17,46 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionhandler {
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiResponseError> handleUserNotFound(UsernameNotFoundException ex) {
+        return new ResponseEntity<>(
+                new ApiResponseError(ex.getMessage(), 404),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponseError> handleBadCredentials(BadCredentialsException ex) {
+        return new ResponseEntity<>(
+                new ApiResponseError("Invalid username or password", 401),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ApiResponseError> handleExpiredJwt(ExpiredJwtException ex) {
+        return new ResponseEntity<>(
+                new ApiResponseError("JWT Token Expired", 401),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiResponseError> handleJwtException(JwtException ex) {
+        return new ResponseEntity<>(
+                new ApiResponseError("Invalid JWT Token", 401),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponseError> handleGenericException(Exception ex) {
+        return new ResponseEntity<>(
+                new ApiResponseError("Something went wrong", 500),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 
     // handle resource not found exception
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -52,7 +95,6 @@ public class GlobalExceptionhandler {
                 .data(null)
                 .timestamp(LocalDateTime.now())
                 .build();
-
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
