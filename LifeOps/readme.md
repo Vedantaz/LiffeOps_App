@@ -418,7 +418,273 @@ Professional flow is:
 4️⃣ API validates token
 5️⃣ Role-based access control
 
+🚀 LifeOps - Secure Task Management API
 
+LifeOps is a production-ready Spring Boot REST API implementing secure authentication and authorization using JWT (Access + Refresh Tokens) with Role-Based Access Control (RBAC).
+
+The system follows enterprise-level security architecture with stateless sessions, global exception handling, and structured API responses.
+
+🏗️ Tech Stack
+
+Java 17+
+
+Spring Boot
+
+Spring Security
+
+JWT (JJWT)
+
+Hibernate / JPA
+
+MySQL / PostgreSQL
+
+BCrypt Password Encoder
+
+🔐 Security Architecture
+
+The project uses:
+
+✅ Stateless authentication
+
+✅ JWT-based authentication
+
+✅ Access + Refresh token mechanism
+
+✅ Role-Based Access Control (USER / ADMIN)
+
+✅ Custom authentication filter
+
+✅ Global exception handling
+
+✅ Custom JSON error responses
+
+🔄 Authentication Flow
+1️⃣ Register
+
+User registers with username & password
+
+Password stored using BCrypt
+
+Default role assigned: USER
+
+2️⃣ Login
+
+Credentials authenticated via AuthenticationManager
+
+System generates:
+
+Access Token (1 hour)
+
+Refresh Token (7 days)
+
+Tokens returned in response
+
+3️⃣ Access Protected Endpoints
+
+Client sends:
+
+Authorization: Bearer <access_token>
+
+JWT filter validates token
+
+Role extracted from token
+
+Access granted/denied based on role
+
+4️⃣ Refresh Token
+
+When access token expires
+
+Client calls /auth/refresh
+
+New access token issued if refresh token valid
+
+🧱 Implemented Components
+🔹 JwtService
+
+Generates JWT token with:
+
+Username (subject)
+
+Role (claim)
+
+Expiration
+
+Extracts:
+
+Username
+
+Role
+
+Validates:
+
+Expiration
+
+Username match
+
+🔹 JwtAuthFilter
+
+Custom filter extending:
+
+OncePerRequestFilter
+
+Responsibilities:
+
+Extract Authorization header
+
+Validate JWT
+
+Set authentication in SecurityContext
+
+Allow request to proceed
+
+🔹 CustomUserDetailsService
+
+Loads user from database
+
+Maps role to Spring Security authorities
+
+Returns Spring UserDetails object
+
+🔹 Role-Based Access Control (RBAC)
+
+Defined Roles:
+
+public enum Role {
+USER,
+ADMIN
+}
+
+Endpoint Protection Example:
+
+Endpoint	Access
+GET /tasks	Public
+POST /tasks	ADMIN
+PUT /tasks	ADMIN, USER
+DELETE /tasks	ADMIN
+🔹 Global Exception Handling
+
+Implemented using:
+
+@RestControllerAdvice
+
+Handled Exceptions:
+
+UsernameNotFoundException
+
+BadCredentialsException
+
+ExpiredJwtException
+
+JwtException
+
+Generic Exception
+
+Standardized Error Response:
+
+{
+"message": "JWT Token Expired",
+"status": 401,
+"timestamp": "2026-02-27T15:30:00"
+}
+🔹 Custom Authentication Entry Point
+
+Prevents default HTML error responses.
+
+Returns structured JSON when:
+
+User is unauthorized
+
+JWT is missing
+
+Invalid authentication
+
+🔹 Refresh Token System
+
+RefreshToken Entity:
+
+token
+
+expiryDate
+
+associated User
+
+Flow:
+
+Stored in database
+
+Verified on refresh request
+
+Deleted if expired
+
+Generates new access token
+
+📂 Project Structure
+com.vedant.LifeOps
+│
+├── config
+│   └── SecurityConfig
+│
+├── security
+│   ├── JwtAuthFilter
+│   ├── JwtService
+│   └── JwtAuthenticationEntryPoint
+│
+├── service
+│   ├── CustomUserDetailsService
+│   └── RefreshTokenService
+│
+├── exception
+│   ├── GlobalExceptionHandler
+│   └── ApiErrorResponse
+│
+├── model
+│   ├── User
+│   ├── Role
+│   └── RefreshToken
+│
+├── repo
+│   ├── UserRepo
+│   └── RefreshTokenRepo
+│
+└── controller
+└── AuthController
+⚙️ Configuration
+
+application.properties:
+
+jwt.secret=YourSuperSecureSecretKeyAtLeast32Characters
+jwt.expiration=3600000
+🛡️ Security Features Summary
+
+✔ Stateless session management
+✔ BCrypt password encryption
+✔ JWT token validation
+✔ Role-based authorization
+✔ Custom authentication entry point
+✔ Structured error handling
+✔ Refresh token persistence
+✔ Expiration validation
+
+🚀 Future Enhancements (Planned)
+
+Logout endpoint with token revocation
+
+Redis-based refresh tokens
+
+Token rotation strategy
+
+Rate limiting
+
+Method-level security (@PreAuthorize)
+
+DTO validation
+
+API response wrapper standardization
+
+🎯 Project Status
+
+This project now follows production-grade backend security architecture and can be extended into a scalable enterprise system.
 
 👨‍💻 Author
 
