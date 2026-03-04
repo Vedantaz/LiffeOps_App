@@ -7,6 +7,13 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
 
+    // for jwt expiration and refresh token implementation
+
+    private long refreshExpiration;
+
+    public long getFreshExpiration() { return refreshExpiration; }
+    public void setRefreshExpiration(long refreshExpiration) {this.refreshExpiration = refreshExpiration; }
+
     private String secret;
     private long expiration;
 
