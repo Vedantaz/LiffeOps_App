@@ -1,5 +1,5 @@
 package com.vedant.LifeOps.controller;
-
+//package com.vedant.LifeOps.service.RefreshTokenService;
 
 import com.vedant.LifeOps.dto.AuthResponse;
 import com.vedant.LifeOps.dto.LoginRequest;
@@ -69,10 +69,22 @@ public class AuthController {
         );
 
         User user = userRepo.findByUsername(request.getUsername()).get();
+        String message = "Logged in Successfully " + user.getUsername() + ".";
         String accessToken = jwtService.generateToken(user.getUsername(), user.getRole().name());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken.getToken()));
+        return ResponseEntity.ok(new AuthResponse(message, accessToken, refreshToken.getToken()));
+
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestParam String refreshToken){
+
+        RefreshToken token = refreshTokenRepo.findByToken(refreshToken)
+                .orElseThrow(()-> new RuntimeException("Refresh token not found."));
+        refreshTokenService.deleteByUser(token.getUser());
+
+        return ResponseEntity.ok("Logged out successfully!");
 
     }
 
@@ -84,14 +96,18 @@ public class AuthController {
 
         refreshTokenService.verifyExpiration(token);
 
-        String newAccessToken = jwtService.generateToken(
-                token.getUser().getUsername(),
-                token.getUser().getRole().name()
-        );
+        User user = token.getUser();
+        // delete old refresh token
 
-        return ResponseEntity.ok(
-                new AuthResponse(newAccessToken, refreshToken)
-        );
+        refreshTokenRepo.delete(token);
+
+        // create new refresh token
+        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
+
+        String newAccessToken = jwtService.generateToken(user.getUsername(), user.getRole().name());
+        String message = "Logged in Successfully" + user.getUsername();
+        return ResponseEntity.ok(new AuthResponse("Access token refreshed successfully", newAccessToken, newRefreshToken.getToken()));
+
     }
 
 
