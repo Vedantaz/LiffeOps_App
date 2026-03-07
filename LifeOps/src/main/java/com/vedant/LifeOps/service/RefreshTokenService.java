@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.UUID;
 
+@Service
 public class RefreshTokenService {
 
     private final RefreshTokenRepo refreshTokenRepo;
