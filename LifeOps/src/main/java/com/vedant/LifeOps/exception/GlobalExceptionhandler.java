@@ -50,14 +50,6 @@ public class GlobalExceptionhandler {
         );
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponseError> handleGenericException(Exception ex) {
-        return new ResponseEntity<>(
-                new ApiResponseError("Something went wrong", 500),
-                HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
-
     // handle resource not found exception
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleNotFound(ResourceNotFoundException ex){
