@@ -686,6 +686,96 @@ API response wrapper standardization
 
 This project now follows production-grade backend security architecture and can be extended into a scalable enterprise system.
 
+/// Next update from last update for DTO validation, Logout endpoint with token revocation and other features
+
+LifeOps Backend
+Overview
+
+    LifeOps is a backend system built using Spring Boot that provides a secure and scalable API for managing personal productivity data. The application includes JWT-based authentication, task management, and goal tracking features, enabling users to organize their daily activities and long-term objectives.
+    
+    The system follows a layered architecture and implements modern backend practices such as stateless authentication, refresh token rotation, centralized exception handling, and API documentation using Swagger.
+
+Features
+    Authentication & Security
+    
+    User Registration
+    
+    Secure Login with JWT
+    
+    Access Token & Refresh Token mechanism
+    
+    Refresh token rotation
+    
+    Logout with token invalidation
+    
+    Password encryption using Spring Security
+    
+    Global exception handling
+
+Task Management
+
+    Users can manage their daily tasks.
+    
+    Features:
+    
+    Create tasks
+    
+    View all tasks
+    
+    Update tasks
+    
+    Delete tasks
+
+    Mark tasks as completed
+
+    Each task is linked to the authenticated user.
+
+Goal Tracking
+
+    Users can define long-term goals and monitor their progress.
+    
+    Features:
+    
+    Create goals
+    
+    Update goals
+    
+    Delete goals
+
+    Track goal completion
+
+API Documentation
+
+    The project integrates Swagger / OpenAPI for easy API exploration and testing.
+    
+    Swagger UI allows developers to:
+    
+    Test endpoints
+    
+    Authorize using JWT
+    
+    Explore request/response structures
+
+Tech Stack
+
+    Backend Framework
+        Spring Boot
+    
+    Security
+        Spring Security + JWT
+    
+    Database Access
+        Spring Data JPA + Hibernate
+    
+    API Documentation
+        Swagger / OpenAPI
+    
+    Architecture
+        RESTful APIs
+
+// from task management to further, these improvisation are in progress...
+
+
 👨‍💻 Author
 
 Mr. Vedant Dinesh Mule
