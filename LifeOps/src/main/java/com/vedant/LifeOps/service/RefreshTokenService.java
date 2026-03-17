@@ -5,7 +5,9 @@ import com.vedant.LifeOps.config.JwtProperties;
 import com.vedant.LifeOps.model.RefreshToken;
 import com.vedant.LifeOps.model.User;
 import com.vedant.LifeOps.repo.RefreshTokenRepo;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.Instant;
@@ -46,6 +48,7 @@ public class RefreshTokenService {
 
     }
 
+    @Transactional
     public void deleteByUser(User user){
         refreshTokenRepo.deleteByUserId(user.getId());
     }
