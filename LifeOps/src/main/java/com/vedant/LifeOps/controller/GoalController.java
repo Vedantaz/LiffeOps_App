@@ -5,6 +5,7 @@ import com.vedant.LifeOps.dto.ProgressRequest;
 import com.vedant.LifeOps.model.Goal;
 import com.vedant.LifeOps.service.GoalService;
 import lombok.Getter;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,12 +34,13 @@ public class GoalController {
     }
 
     @PatchMapping("/{id}/progress")
-    public Goal updateProgress(
+    public ResponseEntity<Goal> updateProgress(
             @PathVariable Long id,
             @RequestBody ProgressRequest progressRequest
             ){
-        return goalService.updateProgress(id, progressRequest.getValue());
+        return ResponseEntity.ok(goalService.updateProgress(id, progressRequest.getValue()));
     }
+
 
 
 

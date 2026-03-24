@@ -58,4 +58,13 @@ public class GoalService {
         return goalRepo.save(goal);
 
     }
+
+    public Goal updateProgress(long goalId, int value){
+        Goal goal = goalRepo.findById(goalId).orElseThrow(()-> new RuntimeException("Goal not found"));
+
+        goal.setCurrentValue(goal.getCurrentValue() + value);
+
+        return goalRepo.save(goal);
+
+    }
 }

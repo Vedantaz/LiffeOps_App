@@ -32,3 +32,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# other project and practice files
+
+../Electricity-Billing-System/
+
+minSpanningTree_TCSNQT.cpp
