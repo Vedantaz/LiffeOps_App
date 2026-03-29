@@ -17,4 +17,13 @@ public class ApiResponse<T> {
     private T data;
     private LocalDateTime timestamp;
 
+    public ApiResponse(String msg, T data){
+
+        this.msg = msg;
+        this.data = data;
+    }
+
+    public String getMsg(){return msg;}
+
+    public T getDate(){return data;}
 }

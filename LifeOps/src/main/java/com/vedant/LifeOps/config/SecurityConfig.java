@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,7 +30,7 @@ public class SecurityConfig {
 
         System.out.println(">>> Custom SecurityConfig Loaded <<<");
 
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth ->
                 auth
                 .requestMatchers(
@@ -46,6 +47,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/tasks/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/tasks/**").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasRole("ADMIN")
+                        .requestMatchers("/dashboard/**").authenticated()
                 .anyRequest().authenticated()
         );
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
