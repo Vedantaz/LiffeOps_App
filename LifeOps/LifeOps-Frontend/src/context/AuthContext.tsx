@@ -1,9 +1,9 @@
 import { createContext, useState, useContext } from "react";
 
-const AuthContext = createContext<any>(null);
+export const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("");
 
   const loginUser = (token: string) => {
     localStorage.setItem("token", token);
@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }: any) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setUser(null);
+    setUser("");
   };
 
   return (
@@ -22,4 +22,5 @@ export const AuthProvider = ({ children }: any) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+
+export const useAuth = () => {return useContext(AuthContext);}
