@@ -23,3 +23,4 @@ export const AuthProvider = ({ children }: any) => {
 };
 
 export const useAuth = () => {return useContext(AuthContext);}
+
